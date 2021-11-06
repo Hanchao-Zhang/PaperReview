@@ -1,0 +1,92 @@
+\documentclass{article}
+\setlength\parindent{0pt}
+\setlength{\parskip}{0pt}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage[linesnumbered,boxed]{algorithm2e}
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+\SetKwInput{KwInt}{Initialize}
+\usepackage{mathrsfs}
+\usepackage{tcolorbox}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{a4paper,scale=0.8}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{ulem}
+\linespread{1.5}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+
+\begin{document}
+
+\title{Review of Stratified Psychiatry via Convexity-Based Clustering with Applications Towards Moderator Analysis \\ \vspace{0.5cm} \small{Thaddeus Tarpey, Eva Petkova, and Liangyu Zhu}}
+
+\author{Hanchao Zhang}
+
+\maketitle
+\vspace{-10mm}
+\section{Convexity-Based Clustering: From Discriminant Analysis to Partitioning}
+
+We focus on the population with two groups. In supervised learning, each observation comes with a class label indicating to which sub-population the observation belongs. Suppose the density in each sub-population is $f_1$ and $f_2$, using these information in discriminant analysis, the optimal rule for classification in terms of minimizing the probability of misclassification in Bayes' rule is to classfy an observation $\pmb x$ to population 1 if 
+
+\begin{equation}\label{eq1}
+	\frac{\pi_1f_1(\pmb x)}{\pi_1f_1(\pmb x) + \pi_2f_2(\pmb x)} \ge \frac{\pi_2f_2(\pmb x)}{\pi_1f_1(\pmb x) + \pi_2f_2(\pmb x)}
+\end{equation}
+
+and it classifies to population 2 otherwise. The mixture density function in the denominator of equation \ref{eq1} is
+
+\begin{equation}
+	f(x) = \pi_1f_1(\pmb x) + \pi_2f_2(\pmb x)
+\end{equation}
+
+The magnitude of subtracting the left hand side by the right hand side for an observation $\pmb x$ in equation \ref{eq1} is a measure of the strength in how well the observation can be classified to one or the other sub-population.
+
+\begin{align}
+	\phi(\lambda(\pmb x)) & = \Bigg( \frac{\pi_1f_1(\pmb x)}{\pi_1f_1(\pmb x) + \pi_2f_2(\pmb x)} -  \frac{\pi_2f_2(\pmb x)}{\pi_1f_1(\pmb x) + \pi_2f_2(\pmb x)} \Bigg)^2\\
+	& = \Bigg(\frac{\pi_1f_1(\pmb x)}{f(\pmb x)} - \frac{\pi_2f_2(\pmb x)}{f(\pmb x)}  \Bigg)^2
+\end{align}
+
+where $\lambda(\pmb x) = \frac{\pi_1f_1(\pmb x)}{f(\pmb x)} - \frac{\pi_2f_2(\pmb x)}{f(\pmb x)}$, and $\phi(\cdot) = (\cdot)^2$. Or we can also define $\lambda(\pmb x) = \frac{\pi_2f_2(\pmb x)}{f(\pmb x)}$, and $\phi(\lambda) = (1 - 2\lambda)^2$.
+
+The objective function that we want to maximize becomes:
+
+
+\begin{align}
+	\mathscr L &= \sum_{j=1}^k P(B_j)\phi(E[\lambda(X) | X\in B_j]) \\
+	& = \sum_{j=1}^k P(B_j)(1- 2E[\lambda (X) | X\in B_j])^2\\
+	& = \sum_{i=1}^k P(B_j)\bigg( 1 - \frac{2}{P(B_j)}\int_{B_j}\frac{\pi_2f_2(x)}{\xout{f(x)}} \xout{f(x)} dx \bigg)^2\\
+	& = \sum_{i=1}^k P(B_j) \bigg(1 -  \frac{2\pi_2P_2(B_j)}{P(B_j)} \bigg)^2\\
+	& = \sum_{i=1}^k P(B_j) \bigg( \frac{\pi_1P_1(B_j) + \pi_2P_2(B_j) - 2\pi_2P_2(B_j)}{P(B_j)} \bigg)^2 \\
+	& = \sum_{i=1}^k \frac{\big(\pi_1P_1(B_j) - \pi_2P_2(B_j)\big)^2}{P(B_j)}
+\end{align}
+
+\section{Semi-Supervised Discriminant Clustering Algorithm}
+
+\begin{enumerate}
+	\item Start with initial partition $B_1, \ldots, B_k$ 
+	\item Calculate the support points as $w_j = E[\lambda(\pmb x)|\pmb x\in B_j] = \frac{\pi_2P_2(B_j)}{P(B_j)}$
+	\item Determine a minimum support plane partition  \\ \vspace{-5mm} \begin{equation}
+		D_j = \{ \lambda \in \mathbb R: ||\lambda - w_j|| < ||\lambda - w_h||, h\neq j \}
+	\end{equation}
+	\item Update the partition by $B_j = \lambda^{-1}(D_j)$, where by if \\ \begin{equation}
+		\lambda(\pmb x) = \frac{\pi_2f_2(\pmb x)}{f(\pmb x)} \in D_j, \text{ then } \pmb x \to B_j
+	\end{equation}
+	\item Repeat 2-4 steps until a convergence criterion is met
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

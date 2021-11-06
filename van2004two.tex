@@ -1,0 +1,318 @@
+\documentclass{article}
+\setlength\parindent{0pt}
+\setlength{\parskip}{0pt}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage[linesnumbered,boxed]{algorithm2e}
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+\SetKwInput{KwInt}{Initialize}
+\usepackage{mathrsfs}
+\usepackage{tcolorbox}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{a4paper,scale=0.8}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{enumitem}
+\linespread{1.5}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+\newtcolorbox[auto counter, number within=chapter, number freestyle={\noexpand\thechapter.\noexpand\arabic{\tcbcounter}}]{mybox}[2][]{%
+    enhanced,
+    breakable,
+    fonttitle=\bfseries,
+    title=\textcolor{black}{Example}~\textcolor{black}{\thetcbcounter:} \textcolor{black}{#2},
+    #1
+}
+
+\begin{document}
+
+\title{Review of Convexity-based clustering criteria: theory, algorithms, and applications in statistics \\ \vspace{0.5cm} \small{Hans-Hermann Bock}}
+
+\author{Hanchao Zhang}
+
+\maketitle
+
+\section{Traditional K-means}
+
+A classical approach of Kmeans that minimize sum of squares (SSQ)
+
+\begin{align}
+	g_n(\mathcal C) &= \frac{1}{n}\sum_{i=1}^m \sum_{k\in \mathcal C_i} ||x_k - \bar x_{\mathcal C_i}||^2 \\
+	& = \frac{1}{n}\sum_{i=1}^m \sum_{k\in \mathcal C_i} ||x_k||^2 + \frac{1}{n} \sum_{i=1}^m \sum_{k\in \mathcal C_i} ||\bar x_{\mathcal C_i}||^2 - \frac{2}{n}\sum_{i=1}^m \sum_{k\in \mathcal C_i} x_k\bar x_{\mathcal C_i}\\
+	& = \frac{1}{n} \sum_{k=1}^n ||x_k||^2 + \sum_{i=1}^m \frac{|\mathcal C_i|}{n}||\bar x_{\mathcal C_i}||^2 - \sum_{i=1}^m \frac{2|\mathcal C_i|}{n}||\bar x_{\mathcal C_i}||^2 \quad\quad \text{since }\bar x_{\mathcal C_i} = \frac{1}{|\mathcal C_i|}\sum_{k\in\mathcal C_i}x_k \\
+	& = \frac{1}{n} \sum_{k=1}^n ||x_k||^2 - \sum_{i=1}^m \frac{|\mathcal C_i|}{n}\cdot||\bar x_{\mathcal C_i}||^2 \label{eq4}
+\end{align}
+
+the minimization problem of equation \ref{eq4} is equivalent to the maximization problem 
+
+\begin{equation}\label{eq5}
+	\max_{\mathcal C}\quad \tilde h_n(\mathcal C) = \sum_{i=m} \frac{|\mathcal C_i|}{n}\cdot||\bar x_{\mathcal C_i}||^2
+\end{equation}
+
+We can converge the equation \ref{eq5} to a two-parameters minimization problem.
+
+\begin{equation}
+	\min_{\mathcal C,\mathcal Z} \quad g_n(\mathcal C, \mathcal Z) = \frac{1}{n}\sum_{i=1}^m\sum_{k\in\mathcal C_i}||x_k - z_i||^2
+\end{equation}
+Where the one-parameter minimization problem becomes a two-parameters minimization with respect to all systems $\mathcal Z = (z_1,\ldots, z_m)$ and $\mathcal C = (C_1,\ldots C_m)$. Now, the algorithm can be done by recursively minimizing $g_n(\mathcal C, \mathcal Z)$.
+
+
+\section{Convexity Based Clustering}
+
+The equation \ref{eq5} involves a convex function $\phi(\cdot) = ||\cdot||^2$. The main idea of this paper is to substitute the quadratic function $||\cdot||^2$ by any arbitrary convex function $\phi$.
+
+
+
+\begin{equation}\label{eq6}
+	\max_{\mathcal C}\quad \tilde h_n(\mathcal C) = \sum_{i=m} \frac{|\mathcal C_i|}{n}\cdot\phi(\bar x_{\mathcal C_i})
+\end{equation}
+
+To generalize the equation \ref{eq6}, we define a the approach in a continuous format. We consider a random variable $X$ in. $\mathbb R^p$ with a known probability distribution $P$, and look for $m$ partitions $\mathcal B = (B_1, B_2,\ldots, B_m)$ of the entire space $\mathbb R^p$
+
+\begin{equation}
+	H(\mathcal B):=\sum_{i=1}^m P(\mathcal B_i)\cdot \phi(E[X|X\in\mathcal B_i])
+\end{equation}
+
+
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=green!35, colback=green!10 ,title=\textbf{Definition: Support Hyperplanes Defined by Derivatives}]
+
+Define a support hyperplane $t(x;z,a)$ of the convex function $\phi: \mathbb R^p \to \mathbb R$ at the support point $z\in \mathbb R^p$ is any linear function $t(x;z,a): = a'(x-z) + \phi(z)$ of $x\in \mathbb R^p$ that fulfills 
+\begin{equation}\label{eq9}
+	\phi(x) \ge t(x; z,a) \quad\quad \text{for all } x \in \mathbb R^p
+\end{equation}
+
+\end{tcolorbox}
+
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=green!35, colback=green!10 ,title=\textbf{Definition: Support Hyperplanes Defined by Conjugate Convex Function}]
+
+For any convex function $\phi$, we can define the conjugate convex function $\phi^*$ by 
+
+\begin{equation}
+	\phi^*(a) := \sup_{x\in \mathbb R^p} \Big\{ a'x - \phi(x) \Big\} \quad\quad \text{for } a \in \mathbb R^p
+\end{equation}
+
+The domain of the conjugate convex function $\phi^*$ is the gradient of the function $\phi$, and denoted by $K(\phi) := \big\{ a \in \mathbb R^p \big| \phi^*(a) < \infty \big\}$. The hyperplane can be defined using the conjugate function as follow
+
+\begin{equation}
+	t(x, z(a), a) = a'x - \phi^*(a) \quad\quad\quad \text{for } x \in \mathbb R^p
+\end{equation}
+\end{tcolorbox}
+
+Thus, a $H(\mathcal B)$ problem can me reformatted to a continuous problem using the support hyperplanes. We denote the new problem as minimum-volume problem $G(\mathcal B, \mathcal Z)$, where $\mathcal Z = (z_1,\ldots, z_m)$ is the system that generate the support hyperplanes
+
+\begin{equation}\label{eq12}
+	G(\mathcal B, \mathcal Z) := \sum_{i=1}^m \int_{\mathcal B_i}\big[\phi(x) - t(x;z_i)  \big] dP(x) = E[\phi(X)] - E[p(X; \mathcal B, \mathcal Z)]
+\end{equation}
+
+$G(\mathcal B, \mathcal Z)$ represent a weighted volumn (weight by the probability density function of $X$) between the surface $\phi(x)$ and $p(x; \mathcal B, \mathcal Z)$.
+
+
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=red!35, colback=red!10 ,title=\textbf{Theorem: Choose $\mathcal Z$ as the Centroid System Minimize the $G(\mathcal B, \mathcal Z)$}]
+ For any fixed m-partition $\mathcal B = (B_1, \ldots, B_m)$ of $\mathbb R^p$, let $z_i^* : = E[X|X\in B_i]$ be the class centroid of $B_i$. Define by $\mathcal Z(\mathcal B) := \mathcal Z^* = (z_1^*, \ldots, z_m^*)$ the system centroids of partition $\mathcal B$. Then the system $\mathcal Z(\mathcal B)$ minimize the equation \ref{eq12}.
+ 
+ \begin{equation}
+ 	G(\mathcal B, \mathcal Z) \ge G(\mathcal B, \mathcal Z(\mathcal B)) \equiv G(\mathcal B, \mathcal Z^*) := G(\mathcal B)
+ \end{equation}
+
+\end{tcolorbox}
+
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=blue!35, colback=blue!10 ,title=\textbf{Proof of Theorem}]
+
+ \begin{align}
+ 	G(\mathcal B , \mathcal Z) - G(\mathcal B, \mathcal Z^*) & = \sum_{i=1}^{m}\int_{\mathcal B_i}\Big[  \big( \phi(x) - t(x; z_i) \big) - \big( \phi(x) - t(x; z_i^*) \big)   \Big]dP(x) \\
+ 	& = \sum_{i=1}^{m}\int_{\mathcal B_i} \Big[ t(x; z_i^*) - t(x; z_i) \Big]dP(x)\\
+ 	& = \sum_{i=1}^{m}\int_{\mathcal B_i} \Big[ \big( a_i^{*'} (x - z_i^*) + \phi(z_i^*)  \big) -  \big( a_i'*(x-z_i) + \phi(z_i) \big)  \Big]dP(x)\\ 	
+ 	& = \sum_{i=1}^{m} \Bigg[ \underbrace{a_i^* \int_{\mathcal B_i} [x_i - z_i^*]dP(x)}_{=0 \text{ by def. of }z_i^*} + \int_{\mathcal B_i}[\phi(z_i^*) - a_i'(x-z_i) - \phi(z_i)]dP(x) \Bigg]\\
+ 	& = \sum_{i=1}^{m} P(B_i)\big[ \phi(z_i^*) - a_i'(x - z_i) - \phi(z_i) \big]\\
+ 	& = \sum_{i=1}^{m} P(B_i) \underbrace{\big[ \phi(z_i^*) - t(z_i^*;z_i \big]}_{\ge 0 \text{ by equation \ref{eq9}}} \ge 0
+ \end{align}
+ 
+\end{tcolorbox}
+
+\begin{tcolorbox}[coltitle= black!80, colframe=red!35, colback=red!10 ,title=\textbf{Corollary: The One-parameter Maximization Problem Alternative} ]
+
+The one-parameter problem formed in equation \ref{eq6} and the two-parameter in equation \ref{eq12} are equivalent.
+
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=blue!35, colback=blue!10 ,title=\textbf{Proof of Corollary}]
+
+\begin{align}
+	 G(\mathcal B) &= G(\mathcal B, \mathcal Z(\mathcal B)) = G(\mathcal B, \mathcal Z^*) = \sum_{i=1}^m \int_{\mathcal B_i} \big[ \phi(x) - t(x; z_i^*) \big]dP(x) \\
+	 & = E[\phi(X)] - \sum_{i=1}^m \int_{\mathcal B_i}\big[ a_i'(x-z_i^*) + \phi(z_i^*) \big]dP(x) \\
+	 & = E[\phi(X)] - \sum_{i=1}^m a_i'\underbrace{\int_{\mathcal B_i}\big[ (x-z_i^*)]dP(x))}_{= 0 \text{ by def. of }z_i^*} + \int_{\mathcal B_i} \big[ \phi(z_i^*) \big]dP(x) \\
+	 & = E[\phi(X)] - \sum_{i=1}^m \phi(E[X|X\in\mathcal B_i]) \\
+	 & = E[\phi(X)] - H(\mathcal B)
+\end{align}
+
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=green!35, colback=green!10 ,title=\textbf{Definition: Maximum Support Plane (MSP)}]
+For a fixed but arbitrary system $\mathcal Z = (z_1, z_2, \ldots,z_m)$, consider an arbitrary system of m support-planes $t(\cdot; z_1,a_1),\ldots, t(\cdot; z_m,a_m)$. A partition $\mathcal B = (B_1, \ldots, B_m)$ is called a maximum-support-plane partition genereated by $\mathcal Z$ and is denoted by $\mathcal B(\mathcal Z)$ if
+\vspace{-4mm}
+\begin{equation}
+	x \in B_i \quad\quad  \Rightarrow  \quad\quad t(x;z_i,a_i) = \max_{j = 1,\ldots,m} t(x; z_j,a_j)
+\end{equation}
+
+Esesentially, $\mathcal B(\mathcal Z)$ has the classes
+\vspace{-2mm}
+\begin{equation}
+	B_i^* := \big\{ x\in \mathbb R^p \big| t(x; z_i, a_i) = \max_{j = 1,\ldots,m} t(x; z_j,a_j) \big\}
+\end{equation}
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[coltitle= black!80, colframe=red!35, colback=red!10 ,title=\textbf{Theorem:  B(Z) Maximize G(B, Z) Comparing to All Possible Partition B }]
+ Any MSP partition $\mathcal B^* = \mathcal B(\mathcal Z)$ generated by $\mathcal Z$ minimizes the two-parameters criterion equation \ref{eq12}
+ \vspace{-2mm}
+ \begin{equation}
+ 	G(\mathcal B, \mathcal Z) \ge G(\mathcal B(\mathcal Z), \mathcal Z) \equiv G(\mathcal B^*, \mathcal Z) : = \Gamma(\mathcal Z)
+ \end{equation}
+ 
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=blue!35, colback=blue!10 ,title=\textbf{Proof of Theorem}]
+
+\begin{align}
+	G(\mathcal B,\mathcal Z) &= \sum_{i=1}^m \int_{B_i} \big[ \phi(x) - t(x; z_i, a_i) \big]dP(x) \overset{\text{by def.}}{\ge}  \sum_{i=1}^m \int_{B_i} \big[ \phi(x) - \gamma(x; z_i, a_i) \big]dP(x)\\
+	& = \int_{\mathbb R^p} \big[ \phi(x) - \gamma(x; z_i, a_i) \big]dP(x) = \sum_{i=1}^m \int_{B_i^*} \big[ \phi(x) - \gamma(x; z_i, a_i) \big]dP(x)\\
+	& \overset{\text{by def.}}{=} \sum_{i=1}^m \int_{B_i^*} \big[ \phi(x) - t(x; z_i, a_i) \big]dP(x)\\
+	& = G(\mathcal B^*, \mathcal Z)
+\end{align}
+
+\end{tcolorbox}
+
+
+From all the previous inequalities, we shows that the algorithm contains following 5 equivalent optimization problems. The solution of any one of these problems yields the solution of the other four.
+
+
+\begin{align}
+	&\min_{\mathcal B, \mathcal Z}G(\mathcal B, \mathcal Z)\\
+	&\min_{\mathcal B} G(\mathcal B, \mathcal Z(\mathcal B)) = \min_{\mathcal B} G(\mathcal B)\\
+	&\min_{\mathcal Z} \Gamma(\mathcal Z) = \min_{\mathcal Z}G(\mathcal B(\mathcal Z), \mathcal Z) = \min_{\mathcal Z} E[\phi(X)] - E[\max_{j= 1,\ldots,m}t(X;z_j)]\\
+	&\max_{\mathcal Z} E[\max_{j=1,\ldots,m}t(X;z_j)]\\
+	&\max_{\mathcal B} H(\mathcal B) = \max_{\mathcal B}\sum_{i=1}^m P(B_i)\cdot\phi(E[X|X\in B_i])
+\end{align}
+
+
+\section{The Maximum Support Plane Algorithm (MSP)}
+
+
+In the previous theorem, we have shown that we can partially minimize the two-parameter criterion $G(\mathcal B, \mathcal Z)$ with respect to its first or to its second variable in an explicit way.
+
+\textbf{Maximum Support Plane Algorithm (MSP)}
+\begin{itemize}
+	\item $t = 0$ start with an inital system $\mathcal Z^{(0)} = (z_1^{(0)}, \ldots, z_m^{(0)})$, $m$ distinct support points from $\mathbb R^p$
+	\item $t \to t+1:$
+	\begin{enumerate}[label=\roman*)]
+		\item Determine a m-partition $\mathcal B^{(t+1)}$ that minimizes the $G(\mathcal B, \mathcal Z^{(t)})$. $\mathcal B^{(t+1)}$ can be chosen to be any MSP partition generated by the center system $\mathcal Z^{(t)}$
+		\item Determine a system of support points $\mathcal Z^{(t+1)}$ which minimizes the criterion $G(\mathcal B^{(t)}, \mathcal Z)$. This system is given by the clas centroids $z_i^{(t+1)} := E[X|X\in B_i^{(t+1)}]$
+	\end{enumerate}
+	\item stopping criterion:\\ Iterate until `convergence', e.g. until the center systems $\mathcal Z^{(t)}$ attain an approximately stationary state
+	
+\end{itemize}
+
+\section{Generalized Convexity Based Criterion}
+
+The generalized idea based on MSP is presented with change of the $\lambda: \mathcal X \to \mathcal R^q$ function. We assume that the random variable $X$ has a domain $\mathcal X$, and look for m-partition of $\mathcal B$ of that domain $\mathcal X$ that maximizes the generalized convexity based clustering criterion.
+
+\begin{equation}
+	\max_{\mathcal B} H_{\lambda}(\mathcal B) : = \max_{\mathcal B}\sum_{i=1}^n \int_{B_i} P(B_i) \cdot \phi(E[\lambda(X)|X\in B_i])
+\end{equation}
+
+Similarly to the previous way of defining a two-parameter problem, now, we represent $t(\lambda; a(w), w) = \phi(w) + a(w)'(\lambda - w)$ for the tangent hyperplane of $\phi$ in the support point $w\in \mathbb R^q$
+\begin{equation}
+	H_\lambda(\mathcal B, \mathcal W)= \sum_{i=1}^m \int_{B_i} t(\lambda(x); a(w_i), w_i) dP(x) \quad\rightarrow \quad \max_{\mathcal B, \mathcal W}
+\end{equation}
+
+
+where the maximization is over all m-partition $\mathcal B = (B_1, \ldots, B_m)$ of $\mathcal X$ denote and all systems $\mathcal W=(w_1,\ldots,w_m)$ of support points $w_i \in \mathbb R^q$.
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=red!35, colback=red!10 ,title=\textbf{Theorem:  W(B) is the system that maximize G(B,W)}]
+For a fixed partition $\mathcal B = (B_1, \ldots, B_m)$ of $\mathcal X$ denote by $w_i^* := E[\lambda(x) | X\in \mathcal B_i]$ the class-specific expectation of the random vector $Y:=\lambda(X)$. Then $\mathcal W(\mathcal B): = \mathcal W^* = (w_1^*, \ldots , w_m^*)$ is an optimum system of support points for $G_\lambda$
+\vspace{-2mm}
+\begin{equation}
+	G_\lambda(\mathcal B, \mathcal W) \le G_\lambda (\mathcal B, \mathcal W(\mathcal B)) = G_\lambda(\mathcal B, \mathcal W^*) = H_\lambda(\mathcal B) \quad\quad \text{for all } \mathcal B, \mathcal W
+\end{equation}
+\end{tcolorbox}
+
+\begin{tcolorbox}[coltitle= black!80, colframe=blue!35, colback=blue!10 ,title=\textbf{Proof of Theorem}]
+For any support system $\mathcal W$, we have
+\vspace{-2mm}
+\begin{align}
+	G_\lambda(\mathcal B, \mathcal W) & = \sum_{i=1}^m \int_{B_i} t(\lambda(x); a(w_i),w_i )dP(x) \\
+	& = \sum_{i=1}^m \int_{B_i} \big\{ \phi(w_i) + a(w_i)'(\lambda(x) - w_i) \big\}dP(x)\\
+	& = \sum_{i=1}^m P(B_i) \big\{ \phi(w_i) + a(w_i)'(E[\lambda(X)|X\in B_i] - w_i) \big\}\\
+	& = \sum_{i=1}^m P(B_i) t(w_i^*; a(w_i), w_i) \overset{\text{by def.}}{\textcolor{red}{\le}} \sum_{i=1}^m P(B_i) \phi(w_i^*) = H_\lambda(\mathcal B)\\
+	& = \sum_{i=1}^m P(B_i) t(w_i^*; a(w_i^*), w_i^*)\\
+	& = \sum_{i=1}^m P(B_i) t(E[\lambda(X)|X\in B_i]; a(w_i), w_i)\\
+	& = \sum_{i=1}^m \int_{B_i}\big\{ \phi(w_i^*) + a(w_i^*)'(\lambda(x) - w_i^*) \big\}dP(x) \\
+	& = G_\lambda(\mathcal B, \mathcal W^*)
+\end{align}
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[coltitle= black!80, colframe=red!35, colback=red!10 ,title=\textbf{Theorem:  B(W) is the partition that maximize G(B,W)}]
+Consider an arbitrary system $\mathcal W = (w_1, \ldots, w_m)$ of m distinct support vectors from $\mathbb R^q$. Denote by $\mathcal D(\mathcal W) = \mathcal D^*$ any MSP partition of $\mathbb R^q$ corresponding to $\mathcal W$ and define the partition $\mathcal B_\lambda(\mathcal W) = \mathcal B^* : = (B_1^* ,\ldots, B_m^*)$ of $\mathcal X$ by the classes $B_i^* : = \lambda^{-1}(D_i^*) : = \{ x\in \mathcal X | \lambda(x) \in D_i^* \}$. Then $\mathcal B^*$ maximize the two-parameter criterion with respect to all m-paritions $\mathcal B = (B_1,\ldots, B_m)$ of $\mathcal X$:
+\vspace{-2mm}
+\begin{equation}
+	G_\lambda(\mathcal B, \mathcal W) \le G_\lambda(\mathcal B_\lambda(\mathcal W), \mathcal W) =: \Gamma_\lambda(\mathcal W) \quad \text{for all } \mathcal B, \mathcal W
+\end{equation}
+
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[coltitle= black!80, colframe=blue!35, colback=blue!10 ,title=\textbf{Proof of Theorem}]
+For a fixed $\mathcal W$, we have for all m-partition $\mathcal B$ of $\mathcal X$:
+\vspace{-2mm}
+\begin{align}
+	G_\lambda(\mathcal B, \mathcal W) &= \sum_{i=1}^m \int_{B_i} t\big( \lambda(x) ; a(w_i), w_i \big)dP(x)\\
+	& \le \sum_{i=1}^m \int_{B_i} \max_{j = 1,\ldots,m} t\big( \lambda(x); a(w_i), w_i \big)dP(x)\\
+	& = \int_{\mathbb R^p} \max_{j = 1,\ldots,m} t\big( \lambda(x); a(w_j), w_j \big)dP(x)\\
+	& \overset{\text{by def.}}{=} \int_{B_i^*} t\big( \lambda(x); a(w_j), w_j \big) \\
+	& = G_\lambda(\mathcal B_\lambda(\mathcal W), \mathcal W)
+\end{align}
+The above two theorems is the analogue of the previous theorem
+
+\end{tcolorbox}
+
+
+
+
+\textbf{The Generalized Maximum Support Plane Algorithm (MSP)}
+\begin{itemize}
+	\item Given $\mathcal B^{(t)}$ calculate support points by $w_i^{(t)} = E[\lambda (X) | X\in B_i^{(t)}]\in \mathbb R^q$ for $i = 1,\ldots,m$ yielding $\mathcal W^{(t)}$
+	\item Determine a MSP partition $\mathcal D(\mathcal W^{(t)})$ of $\mathbb R^q$ with classes \\ \begin{equation*}
+		D_i^{(t)} = \{ \lambda \in \mathbb R^q | t(\lambda; a(w_i^{(t)}), w_i^{(t)}) = \max_j t(\lambda; a(w_i^{(t)}), w_i^{(t)}) \}
+	\end{equation*}
+	\item Build the m-partition $\mathcal B^{(t_1)}$ of $\mathcal X$ with classes $B_i^{(t+1)}:=\lambda^{-1}(D_i^{(t)})$
+
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
