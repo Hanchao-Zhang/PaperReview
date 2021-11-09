@@ -140,21 +140,81 @@ since we have $Y \sim f_Y(y)$, and $Y = \pmb A^T X$, where we can get $X = \pmb 
 	& = H[Y]
 \end{align}
 
+For convenience, rather than using the entropy $H(Y_j)$, Hyvarinen and Oja (2000) ues the negentropy measure $J(Y_j)$ defined by
 
+\begin{equation}
+	J(Y_j) = H(Z_j) - H(Y_j)
+\end{equation}
 
+where $Z_j$ is a Gaussian random variable with the same variance as $Y_j$. They proposed simple approximations to negentropy which can be computed and optimized on the data.
 
+\begin{equation}
+	J(Y_j) \approx \bigg(E\big[G(Y_j)\big] - E\big[ G(Z_j) \big] \bigg)^2
+\end{equation}
 
+where $G(u) = \frac{1}{a}\log\cosh (au)$ for $1 < a < 2$.
 
+With pre-whitened data, this amounts to looking for components that are as independent as possible.
 
+\section{Direct Approach of Independent Component Analysis by a Joint Product Density}
 
+Independent component have by definition a joint product density
 
+\begin{equation}
+	f_S(s) = \prod_{j = 1}^p f_j(s_j)
+\end{equation}
 
+And in the spirit of representing departures from Gaussianity, we represent each $f_j$ as
 
+\begin{equation}
+	f_j(s_j) = \phi(s_j)\exp\{g_j(s_j) \} = \frac{1}{\sqrt{2\pi}}\exp\{\frac{1}{2}s_j^2 \}\cdot \exp\{g_j(s_j) \}
+\end{equation}
 
+the log-likelihood for the observed data $X = \pmb A S$ is
 
+\begin{equation}
+	\ell(\pmb A\{g_j\}_{j=1}^p; \pmb X) = \sum_{i=1}^N\sum_{j=1}^p[\log \phi_j(a_j^Tx_i) + g_j(a_j^Tx_i) ]
+\end{equation}
 
+which we want to maximize subjected to $\pmb A$ orthogonal and $g_j$ result in density function. So, we instead maximize a regularized version 
 
+\begin{equation}
+	\sum_{j=1}^p\Big[ \sum_{i=1}^N [\log \phi_j(a_j^Tx_i) + g_j(a_j^Tx_i) ] - \underbrace{\int \phi(t)e^{g_j(t)}dt}_{\text{density}} - \underbrace{\lambda_j\int\{g_j'''(t) \}^2(t)dt}_{\text{splines penalty}}  \Big]
+\end{equation}
 
+The first integral that controls for density is problematic and requires an approximation. We construct a fine grid of $L$ values $s_\ell^*$ in increments $\Delta$ covering the observed value $s_i$ and count the number of $s_i$ in the resulting bins:
+
+\begin{equation}
+	y_\ell^* = \frac{\# s_i\in(s_i^* - \frac{\Delta}{2}, s_i^* + \frac{\Delta}{2} )}{N}
+\end{equation}
+
+Step 2 (a), we can then approximate the penalized likelihood by
+
+\begin{equation}
+	\sum_{\ell = 1}^L \Big\{ y_i^*[\log(\phi(s_\ell^*)) + g(s_\ell^*) ] - \Delta \phi(s_\ell^*)e^{g(s_\ell^*)} \Big\} - \lambda \int g'''^2(s)ds
+\end{equation}
+
+and in practice, we set all $\lambda_j$ to the same.
+
+Step 2(b), we optimize the $\pmb A$ with respect to the penalized likelihood function. Only the first terms in the sum involve $\pmb A$, and since $\pmb A$ is orthogonal, $\phi$ do not depend on $\pmb A$. Hence, we need to maximize
+
+\begin{equation}
+	C(\pmb A) = \frac{1}{N}\sum_{j=1}^p \sum_{i=1}^N \hat g_j(a_j^Tx_i) = \sum_{j=1}^p C_j(a_j)
+\end{equation}
+
+1. for each $j$ update
+
+\begin{equation}
+	a_j \longleftarrow E\bigg\{ X\hat g_j'(a_j^TX) - E[g_j''(a_j^TX)]a_j \bigg\}
+\end{equation}
+
+2. Orthogonalize $\pmb A$ using the symmetric square-root transformation $(\pmb A\pmb A^T)^{\frac{1}{2}}\pmb A$. Let $UDV^T$ be the singular decomposition of $\pmb A$, we will have 
+\begin{align}
+	(\pmb A\pmb A^T)^{\frac{1}{2}}\pmb A &= (UDV^T VD^TU^T)^{\frac{1}{2}} UDV^T\\
+	& = (UD^2U^T)^{\frac{1}{2}}UDV^T\\
+	& = D^{-1}UDV^T\\
+	 \pmb A &\leftarrow  UV^T
+\end{align}
 
 
 
