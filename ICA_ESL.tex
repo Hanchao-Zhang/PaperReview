@@ -125,8 +125,21 @@ The quantity $I(Y)$ is called the \textit{Kullback-Leibler} distance or \textit{
 This is the measurement of \textit{Kullback-Leibler} distance betweenthe density $g(y)$ of $Y$ and its independence version $\prod_{j=1}^p g_j(y_j)$, where $g_j(y_j)$ is the marginal density of $Y_j$. Now, if $X$ has covariance $\mathbf I$, and $Y = \pmb A^T X$ with $\pmb A$ orthogonal, then we will have
 
 \begin{align}
-	I(Y) & = \sum
+	I(Y) & = \sum_{j=1}^p H(Y_j) - H(Y) \\
+	& = \sum_{j=1}^p H(Y_j) - H(X) - \log |\det \pmb A|\\
+	& = \sum_{j=1}^p H(Y_j) - H(X)
 \end{align}
+
+since we have $Y \sim f_Y(y)$, and $Y = \pmb A^T X$, where we can get $X = \pmb A Y$, and the $PDF$ of $X$ is $f_X(x) = f_Y(x)||\pmb A||$
+
+\begin{align}
+	H(X) & = E[-\log f_X(x)] = -E\bigg[ \log \big(||\pmb A|| \cdot f_Y(x)\big) \bigg]\\
+	& = - E\bigg[ \log ||A|| + \log f_Y(x) \bigg] \\
+	& = -\log||A|| - E[-\log f_Y(x)]\\
+	& = -\log||A|| + H[Y]\\
+	& = H[Y]
+\end{align}
+
 
 
 
