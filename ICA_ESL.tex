@@ -46,15 +46,111 @@ and we have
 \end{equation}
 
 Where $\pmb S$ and $\pmb X$ have mean $0$, and $\pmb U$ is an orthogonal matrix. We can interpret the SVD or the corresponding principal component analysis as an estimate of a latent variable model.
-
+\begin{equation}
+\begin{aligned}
+	X_1 &= a_{11}S_1 + a_{12}S_2 + \cdots + a_{1p} S_p\\
+	X_2 &= a_{21}S_1 + a_{22}S_2 + \cdots + a_{2p} S_p\\
+	\vdots & \hspace{30mm} \vdots \\
+	X_p &= a_{p1}S_1 + a_{p2}S_2 + \cdots + a_{pp} S_p
+\end{aligned}
+\end{equation}
 However, for any orthogonal matrix $\pmb R$, we can write
 
-\begin{align}
-	X & = \pmb A s\\
-	& = \pmb A \pmb R^T \pmb R S\\
+\begin{equation}
+\begin{aligned}
+	X & = \pmb A S \\
+	& = \pmb A \pmb R^T \pmb R S \\
 	& = \pmb A^* S^*
+\end{aligned}
+\end{equation}
+
+Hence there are many such decompositions and it is therefore impossible to identify any particular latent variable as unique underlying sources. The classical factor analysis model has the form ($q<p$)
+
+\begin{equation}
+\begin{aligned}
+	X_1 &= a_{11}S_1 + a_{12}S_2 + \cdots + a_{1q} S_q + \varepsilon_1\\
+	X_2 &= a_{21}S_1 + a_{22}S_2 + \cdots + a_{2q} S_q + \varepsilon_2\\
+	\vdots & \hspace{30mm} \vdots \\
+	X_p &= a_{p1}S_1 + a_{p2}S_2 + \cdots + a_{pq} S_q + \varepsilon_p
+\end{aligned}
+\end{equation}
+
+or 
+
+\begin{equation}
+	X = \pmb A S + \varepsilon
+\end{equation}
+
+
+Typically the $S_j$ and $\varepsilon_j$ are modeled as Gaussian random variables and the model is fit by maximum likelihood.
+
+\section{Independent Component Analysis}
+
+The ICA model has the form:
+
+\begin{equation}
+\begin{aligned}
+	X_1 &= a_{11}S_1 + a_{12}S_2 + \cdots + a_{1p} S_p\\
+	X_2 &= a_{21}S_1 + a_{22}S_2 + \cdots + a_{2p} S_p\\
+	\vdots & \hspace{30mm} \vdots \\
+	X_p &= a_{p1}S_1 + a_{p2}S_2 + \cdots + a_{pp} S_p
+\end{aligned}
+\end{equation}
+
+or
+
+\begin{equation}
+	X = \pmb A S
+\end{equation}
+
+where the $S_i$ are assumed to be statistically independent rather than uncorrelated. Intuitively, uncorrelated determines the second cross moment $\text{Cov(X)}$, and statistically independent determines all cross moments.
+
+We wish to recover the matrix $\pmb A$ in $X = \pmb A S$. Without loss of generality, we can assume that $X$ has already been whitened to have $\text{Cov}(X) = \mathbf I$, which implies that $\pmb A$ is orthogonal. Solving the ICA problem amounts to findg and orthogonal $\pmb A$ such that the components of the vector random variables $S = \pmb A^T X$ are independent and non-Gaussian.
+
+Many of the popular approaches to ICA are based on entropy. The differential entropy $H$ of a random variable $Y$ with density $g(y)$ is given by
+
+\begin{equation}
+	H(Y) = E[-\log g(Y)] = -\int g(y)\log g(y) dy
+\end{equation}
+
+The quantity $I(Y)$ is called the \textit{Kullback-Leibler} distance or \textit{mutual information}
+
+\begin{equation}
+\begin{aligned}
+		I(Y) = \sum_{j=1}^p H(Y_j) - H(Y)
+\end{aligned}
+\end{equation}
+
+
+This is the measurement of \textit{Kullback-Leibler} distance betweenthe density $g(y)$ of $Y$ and its independence version $\prod_{j=1}^p g_j(y_j)$, where $g_j(y_j)$ is the marginal density of $Y_j$. Now, if $X$ has covariance $\mathbf I$, and $Y = \pmb A^T X$ with $\pmb A$ orthogonal, then we will have
+
+\begin{align}
+	I(Y) & = \sum
 \end{align}
 
-Hence there are many such decompositions and it is therefore impossible to identify any particular latent variable as unique underlying sources.	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
