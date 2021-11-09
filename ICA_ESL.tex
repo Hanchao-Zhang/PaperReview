@@ -1,0 +1,60 @@
+\documentclass{article}
+\setlength\parindent{0pt}
+\setlength{\parskip}{0pt}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage[linesnumbered,boxed]{algorithm2e}
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+\SetKwInput{KwInt}{Initialize}
+\usepackage{mathrsfs}
+\usepackage{tcolorbox}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{a4paper,scale=0.8}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{ulem}
+\linespread{1.5}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+
+\begin{document}
+
+\title{Review of Independent Component Analysis\\ \small{Element of Statistical Learning Book, Chapter 14}}
+
+\author{Hanchao Zhang}
+
+\maketitle
+
+\section{Latent Variables an Factor Analysis}
+
+The singular decomposition 
+
+\begin{equation}
+	\pmb X = \pmb U \pmb D \pmb V^T
+\end{equation}
+
+We can write $\pmb S = \sqrt N \pmb U$ and $\pmb A^T = \frac{\pmb D\pmb V^T}{\sqrt{N}}$
+
+and we have 
+
+\begin{equation}
+	\pmb X = \pmb S \pmb A^T = \sqrt N \pmb U \frac{\pmb D\pmb V^T}{\sqrt{N}} = \pmb U \pmb D \pmb V^T
+\end{equation}
+
+Where $\pmb S$ and $\pmb X$ have mean $0$, and $\pmb U$ is an orthogonal matrix. We can interpret the SVD or the corresponding principal component analysis as an estimate of a latent variable model.
+
+However, for any orthogonal matrix $\pmb R$, we can write
+
+\begin{align}
+	X & = \pmb A s\\
+	& = \pmb A \pmb R^T \pmb R S\\
+	& = \pmb A^* S^*
+\end{align}
+
+Hence there are many such decompositions and it is therefore impossible to identify any particular latent variable as unique underlying sources.	
+
+\end{document}
