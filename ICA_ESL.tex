@@ -130,17 +130,43 @@ This is the measurement of \textit{Kullback-Leibler} distance betweenthe density
 	& = \sum_{j=1}^p H(Y_j) - H(X)
 \end{align}
 
+
+\begin{tcolorbox}[title=\textit{Kullback  Leibler divergence}, coltitle = blue!50!black, colframe = blue!25]
+	$I(Y)$ is a measurement of how one probability distribution is different from another probability distribution. In our case, the two distribution is $P = g_Y(y)$ and $Q = \prod_{j=1}^p g_j(y_j)$
+	
+	The definition of \textit{Kullback  Leibler divergence} is
+
+	\begin{equation}
+		D_{KL}(P||Q) = \int_{\mathcal X} p(x) \frac{p(x)}{q(x)} dx
+	\end{equation}
+	
+	which in our case becomes
+	\begin{align}
+		D_{KL}(P||Q) &= \int_{\mathcal X} p(x) \log \frac{p(x)}{q(x)} dx
+		 = \int_{\mathcal X} \log \frac{p(x)}{q(x)} dP
+		  = \int_{\mathcal Y} \log \frac{g(y)}{\prod_{j=1}^p g_j(y_j)} dG\\
+		& = \int_{\mathcal Y} \bigg[ \log g(y) - \sum_{j=1}^p \log g_j(y_j) \bigg] dG\\
+		 &= -E[-\log g(y)] + \sum_{j=1}^p E[-\log g_j(y_j)]\\
+		 & = \sum_{j=1}^p H(Y_j) - H(Y)
+	\end{align}
+	
+\end{tcolorbox}
+
+
 since we have $Y \sim f_Y(y)$, and $Y = \pmb A^T X$, where we can get $X = \pmb A Y$, and the $PDF$ of $X$ is $f_X(x) = f_Y(x)||\pmb A||$
 
 \begin{align}
-	H(X) & = E[-\log f_X(x)] = -E\bigg[ \log \big(||\pmb A|| \cdot f_Y(x)\big) \bigg]\\
-	& = - E\bigg[ \log ||A|| + \log f_Y(x) \bigg] \\
-	& = -\log||A|| - E[-\log f_Y(x)]\\
+	H(X) & = E[-\log g_X(x)] = -E\bigg[ \log \big(||\pmb A|| \cdot g_Y(x)\big) \bigg]\\
+	& = - E\bigg[ \log ||A|| + \log g_Y(x) \bigg] \\
+	& = -\log||A|| - E[-\log g_Y(x)]\\
 	& = -\log||A|| + H[Y]\\
 	& = H[Y]
 \end{align}
 
+
+
 For convenience, rather than using the entropy $H(Y_j)$, Hyvarinen and Oja (2000) ues the negentropy measure $J(Y_j)$ defined by
+\vspace{1.8mm}
 
 \begin{equation}
 	J(Y_j) = H(Z_j) - H(Y_j)
@@ -215,6 +241,8 @@ Step 2(b), we optimize the $\pmb A$ with respect to the penalized likelihood fun
 	& = D^{-1}UDV^T\\
 	 \pmb A &\leftarrow  UV^T
 \end{align}
+
+
 
 
 
