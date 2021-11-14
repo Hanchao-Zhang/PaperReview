@@ -1,0 +1,116 @@
+\documentclass{article}
+\setlength\parindent{0pt}
+\setlength{\parskip}{0pt}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage[linesnumbered,boxed]{algorithm2e}
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+\SetKwInput{KwInt}{Initialize}
+\usepackage{mathrsfs}
+\usepackage{tcolorbox}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{a4paper,scale=0.8}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{ulem}
+\linespread{1.5}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+
+\begin{document}
+
+\title{Title}
+
+\author{Author}
+
+\maketitle
+
+\section{PDF CDF and Survival Function}
+
+\begin{equation}
+	h(t) = \frac{f(t)}{S(t)}
+\end{equation}
+
+\begin{equation}
+	f(x) = PDF \quad F(x) = CDF \quad S(x) = 1 - F(x) 
+\end{equation}
+
+\begin{equation}
+	F(x) = \sum_{i=1}^t P(X = t)
+\end{equation}
+
+\begin{align}
+	P(X = 1) = \frac{1}{6}\\
+	P(X = 2) = \frac{1}{6}\\
+	P(X = 3) = \frac{1}{6}\\
+	P(X = 4) = \frac{1}{6}\\
+	P(X = 5) = \frac{1}{6}\\
+	P(X = 6) = \frac{1}{6}
+\end{align}
+
+\begin{align}
+	F(X = 1) = \frac{1}{6} \\
+	F(X = 2) = \frac{2}{6} \\
+	F(X = 3) = \frac{3}{6} \\
+	F(X = 4) = \frac{4}{6} \\
+	F(X = 5) = \frac{5}{6} \\
+	F(X = 6) = 1
+\end{align}
+
+\begin{equation}
+	F(x) = \int_{-\infty}^x  f(t) dt
+\end{equation}
+
+\begin{equation}
+	Y = X \beta + \epsilon 
+\end{equation}
+
+\begin{equation}
+	\begin{pmatrix}
+		y_1 \\ \vdots \\ y_n
+	\end{pmatrix} = 
+	\begin{pmatrix}
+		x_{11} & \ldots & x_{p1} \\ \vdots & \ddots & \vdots \\ x_{1n} & \ldots & x_{pn} 
+	\end{pmatrix}^T \times
+	\begin{pmatrix}
+		\beta_1 \\ \vdots \\ \beta_p
+	\end{pmatrix} + 
+	\begin{pmatrix}
+		\epsilon_1 \\ \vdots \\ \epsilon_n
+	\end{pmatrix}
+\end{equation}
+
+
+\begin{equation}
+	y_1 = x_{11} \times \beta_{11} + x_{12} \times \beta_2 \ldots  x_{p1} \times \beta_p + \epsilon_1 = \sum_{i=1} ^ p \beta_i\times x_{i1} + \epsilon_1
+\end{equation}
+
+\begin{align}
+	h(t) &= h_0(t) \times e^{X\beta + \epsilon} \\
+	& = h_0(t) \times e^{X\beta} \times e^\epsilon   \quad\quad e^{a+b} = e^a \times e^b  \\
+	& = h_0'(t) \times  e^{X\beta} \quad\quad h_0'(t) = h_0(t) e^{\epsilon}\\
+	\frac{h(t)}{h_0'(t)} &= e^{X\beta}\\
+	\ln \Bigg( \frac{h(t)}{h_0'(t)} \Bigg) & = \ln e^{X\beta} = X\beta \quad\quad log_e^{e^a} = a
+\end{align}
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
